@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Groupie-Tracker</title>
+        <link rel="stylesheet" href="css/index.css">
+        <link rel="icon" type="image/x-icon" href="images/favicon.ico">
+    </head>
+    <body>
+        <header>
+            <h1>Groupie-Tracker</h1>
+        </header>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+            </ul>
+        </nav>
+        <main>
+            <h2>Home</h2>
+            <div class="cards">
+                {{ range . }}
+                <div class="card">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <img src="{{ .Image }}" alt="{{ .Name }}" class="album-cover">
+                        </div>
+                        <div class="card-back">
+                            <div class="card-back-disc" data-id="{{ .ID }}"></div>
+                            <h3 class="artist-name">{{ .Name }}</h3>
+                        </div>
+                    </div>
+                </div>
+                {{ end }}
+            </div>
+        </main>
+        <footer>
+            <p>&copy; 2024 Groupie-Tracker</p>
+        </footer>
+        <script src="js/index.js"></script>
+    </body>
+</html>

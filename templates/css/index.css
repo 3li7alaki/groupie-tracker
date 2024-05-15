@@ -1,0 +1,98 @@
+:root {
+    --start-angle: 0deg; /* Default value */
+}
+
+.cards {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.card {
+    background-color: transparent;
+    min-width: 300px;
+    width: 300px;
+    height: 300px;
+    perspective: 1000px;
+}
+
+.card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.8s ease;
+    transform-style: preserve-3d;
+}
+
+.card:hover .card-inner {
+    transform: rotateY(180deg);
+    cursor: grab;
+}
+
+.card:not(:hover) .card-inner {
+    transition: transform 2s ease;
+}
+
+.card-front, .card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden; /* Safari */
+    backface-visibility: hidden;
+    border-radius: 10px;
+}
+
+.card-front {
+    background-color: #bbb;
+    color: black;
+}
+
+.card-back {
+    background: url('../images/disc.jpg');
+    background-size: cover;
+    color: white;
+    transform: rotateY(180deg);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+}
+
+.artist-name {
+    font-family: "Montserrat", sans-serif;
+    font-size: 1.5rem;
+    margin-top: 20%;
+    margin-bottom: auto;
+}
+
+.card-back-disc {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: inherit;
+    border-radius: 50%;
+    animation: spin 4s infinite linear;
+    z-index: -1;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(var(--start-angle));
+    }
+    to {
+        transform: rotate(calc(var(--start-angle) + 360deg));
+    }
+}
+
+.album-cover {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+}

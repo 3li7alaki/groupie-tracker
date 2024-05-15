@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <title>Groupie-Tracker</title>
+    <link rel="stylesheet" href="css/artist.css">
+    <link rel="icon" type="image/x-icon" href="images/favicon.ico" >
+    </head>
+
+    <body>
+        <header>
+            <h1>Groupie-Tracker</h1>
+        </header>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+            </ul>
+        </nav>
+        <main class="artist">
+            <h2 class="artist-name">{{ .Name }}</h2>
+
+            <div class="artist">
+                <img src="{{ .Image }}" alt="{{ .Name }}" class="artist-image">
+                <div class="artist-info">
+                    <p><strong>Members:</strong></p>
+                    <ul>
+                        {{ range .Members }}
+                        <li>{{ . }}</li>
+                        {{ end }}
+                    </ul>
+                    <p><strong>Creation Date:</strong> {{ .CreationDate }}</p>
+                    <p><strong>First Album:</strong> {{ .FirstAlbum }}</p>
+                    <p><strong>Tour Locations:</strong></p>
+                    <ul>
+                        {{ range $location, $dates := .TourLocations }}
+                        <li>{{ $location }}
+                            <ul>
+                                {{ range $dates }}
+                                <li>{{ . }}</li>
+                                {{ end }}
+                            </ul>
+                        </li>
+                        {{ end }}
+                    </ul>
+                </div>
+            </div>
+        </main>
+        <footer>
+            <p>&copy; 2024 Groupie-Tracker</p>
+        </footer>
+    </body>
+</html>
