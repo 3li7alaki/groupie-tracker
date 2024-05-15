@@ -21,6 +21,44 @@
                 <label>
                     <input class="search" type="text" placeholder="Enter Name">
                 </label>
+                <label>
+                    Created Between:
+                    <input class="creation-min" type="date" value="" min="1997-01-01">
+                </label>
+                <label>
+                    and:
+                    <input class="creation-max" type="date" value="" max="2030-12-31">
+                </label>
+                <div class="members">
+                    <p>Members:</p>
+                    <label>
+                        <input class="member-count" type="checkbox" data-count="1">1
+                    </label>
+                    <label>
+                        <input class="member-count" type="checkbox" data-count="2">2
+                    </label>
+                    <label>
+                        <input class="member-count" type="checkbox" data-count="3">3
+                    </label>
+                    <label>
+                        <input class="member-count" type="checkbox" data-count="4">4
+                    </label>
+                    <label>
+                        <input class="member-count" type="checkbox" data-count="5">5
+                    </label>
+                    <label>
+                        <input class="member-count" type="checkbox" data-count="6">6
+                    </label>
+                    <label>
+                        <input class="member-count" type="checkbox" data-count="7">7
+                    </label>
+                </div>
+                <label>
+                    <input class="first-album" type="month" min="1997-01" max="2030-12">
+                </label>
+                <label>
+                    <input class="clear" type="button" value="Clear Filters" onclick="clearFilters()">
+                </label>
             </div>
             <div class="cards">
             </div>

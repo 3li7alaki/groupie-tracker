@@ -12,21 +12,21 @@ function init() {
 
 // Asynchronously fill the cards
 async function filter() {
-    document.querySelector('.loading').style.display = 'block';
-    await new Promise(resolve => setTimeout(resolve, 300));
+    await loading(500);
 
     let url = new URL(window.location.href);
     let search = document.querySelector('.search').value;
-    // let creationDate = document.querySelector('.creation-date').value;
-    // let firstAlbum = document.querySelector('.first-album').value;
-    // let memberCount = document.querySelector('.member-count').value;
+    let creationMin = document.querySelector('.creation-min').value;
+    let creationMax = document.querySelector('.creation-max').value;
+    let memberCount = [...document.querySelectorAll('.member-count')].filter(member => member.checked).map(member => member.dataset.count);
+    let firstAlbum = document.querySelector('.first-album').value;
+
     // let concertLocations = document.querySelector('.concert-locations').value;
 
     // let filtered = search || creationDate || firstAlbum || memberCount || concertLocations;
-    let filtered = search;
+    let filtered = search || creationMin || creationMax || memberCount.length > 0 || firstAlbum;
 
     if (!filtered) {
-        document.querySelector('.loading').style.display = 'none';
         fillCards(artists);
         url.search = '';
         window.history.pushState({}, '', url);
@@ -34,15 +34,23 @@ async function filter() {
     }
 
     let filteredArtists = artists.filter(artist => {
-        let searchMatch = artist.name.toLowerCase().includes(search.toLowerCase());
-        // let creationDateMatch = artist.creationDate.includes(creationDate);
-        // let firstAlbumMatch = artist.firstAlbum.includes(firstAlbum);
-        return searchMatch;
+        let searchMatch = search ? artist.name.toLowerCase().includes(search.toLowerCase()) : true;
+        let creationMinMatch = creationMin ? Date.parse(artist.creationDate) >= Date.parse(creationMin) : true;
+        let creationMaxMatch = creationMax ? Date.parse(artist.creationDate) <= Date.parse(creationMax) : true;
+        let memberCountMatch = memberCount.length > 0 ? memberCount.includes(artist.members.length.toString()) : true;
+
+        let firstAlbumMatch = true;
+        if (firstAlbum) {
+            let firstAlbumDate = new Date(firstAlbum+'-01');
+            let artistFirstAlbumDate = new Date(artist.firstAlbum);
+            firstAlbumMatch = firstAlbumDate.getFullYear() === artistFirstAlbumDate.getFullYear() && firstAlbumDate.getMonth() === artistFirstAlbumDate.getMonth();
+        }
+
+        return searchMatch && creationMinMatch && creationMaxMatch && memberCountMatch && firstAlbumMatch;
     });
 
     let cards = document.querySelector('.cards');
     cards.innerHTML = '';
-    document.querySelector('.loading').style.display = 'none';
     if (filteredArtists.length === 0) {
         let noResults = document.createElement('h2');
         noResults.classList.add('no-results');
@@ -56,8 +64,10 @@ async function filter() {
 
     // Update URL
     search ? url.searchParams.set('search', search) : url.searchParams.delete('search');
-    // url.searchParams.set('creationDate', creationDate);
-    // url.searchParams.set('firstAlbum', firstAlbum);
+    creationMin ? url.searchParams.set('creationMin', creationMin) : url.searchParams.delete('creationMin');
+    creationMax ? url.searchParams.set('creationMax', creationMax) : url.searchParams.delete('creationMax');
+    memberCount.length > 0 ? url.searchParams.set('memberCount', memberCount) : url.searchParams.delete('memberCount');
+    firstAlbum ? url.searchParams.set('firstAlbum', firstAlbum) : url.searchParams.delete('firstAlbum');
     // url.searchParams.set('memberCount', memberCount);
     // url.searchParams.set('concertLocations', concertLocations);
     window.history.pushState({}, '', url);
@@ -66,21 +76,37 @@ async function filter() {
 function getFilters() {
     let url = new URL(window.location.href);
     let search = url.searchParams.get('search');
-    let creationDate = url.searchParams.get('creationDate');
-    let firstAlbum = url.searchParams.get('firstAlbum');
+    let creationMin = url.searchParams.get('creationMin');
+    let creationMax = url.searchParams.get('creationMax');
     let memberCount = url.searchParams.get('memberCount');
+    let firstAlbum = url.searchParams.get('firstAlbum');
     let concertLocations = url.searchParams.get('concertLocations');
 
-    let filtered = search || creationDate || firstAlbum || memberCount || concertLocations;
+    let filtered = search || creationMin || creationMax || memberCount || firstAlbum;
 
     if (filtered) {
         document.querySelector('.search').value = search;
-        // document.querySelector('.creation-date').value = creationDate;
+        document.querySelector('.creation-min').value = creationMin;
+        document.querySelector('.creation-max').value = creationMax;
+        memberCount ? memberCount.split(',').forEach(count => document.querySelector(`.member-count[data-count="${count}"]`).checked = true) : null;
+        document.querySelector('.first-album').value = firstAlbum;
         // document.querySelector('.first-album').value = firstAlbum;
         // document.querySelector('.member-count').value = memberCount;
         // document.querySelector('.concert-locations').value = concertLocations;
     }
 
+    filter();
+}
+
+// Clear the filters
+function clearFilters() {
+    document.querySelector('.search').value = '';
+    document.querySelector('.creation-min').value = '';
+    document.querySelector('.creation-max').value = '';
+    document.querySelector('.first-album').value = '';
+    document.querySelectorAll('.member-count').forEach(member => member.checked = false);
+    // document.querySelector('.member-count').value = '';
+    // document.querySelector('.concert-locations').value = '';
     filter();
 }
 
@@ -95,13 +121,18 @@ async function getArtists() {
 
 function addFilterEvents() {
     let search = document.querySelector('.search');
-    // let creationDate = document.querySelector('.creation-date');
-    // let firstAlbum = document.querySelector('.first-album');
+    let creationMin = document.querySelector('.creation-min');
+    let creationMax = document.querySelector('.creation-max');
+    let memberCount = document.querySelectorAll('.member-count');
+    let firstAlbum = document.querySelector('.first-album');
     // let memberCount = document.querySelector('.member-count');
     // let concertLocations = document.querySelector('.concert-locations');
 
     search.addEventListener('input', debounce(filter, 200));
-    // creationDate.addEventListener('onchange', filter);
+    creationMin.addEventListener('input', debounce(filter, 200));
+    creationMax.addEventListener('input', debounce(filter, 200));
+    memberCount.forEach(member => member.addEventListener('change', debounce(filter, 200)));
+    firstAlbum.addEventListener('input', debounce(filter, 200));
     // firstAlbum.addEventListener('onchange', filter);
     // memberCount.addEventListener('onchange', filter);
     // concertLocations.addEventListener('onchange', filter);
@@ -165,9 +196,9 @@ function addCardBackEvents() {
                 if (isMouseDown) {
                     let radians = Math.atan2(e.pageX - center.x, e.pageY - center.y);
                     if (radians < 0) {
-                        currentDegree += 2;
+                        currentDegree += 1;
                     } else {
-                        currentDegree -= 2;
+                        currentDegree -= 1;
                     }
                     cardBack.style.animation = 'none'; // Remove the spinning animation
                     cardBack.style.transform = `rotate(${currentDegree}deg)`;
@@ -193,7 +224,8 @@ function addCardBackEvents() {
             }
         });
 
-        cardBack.addEventListener('dblclick', function () {
+        cardBack.addEventListener('dblclick', async function () {
+            await loading(1000);
             let dataId = cardBack.getAttribute('data-id');
             window.location.href = '/artist?id=' + dataId;
         })
@@ -230,4 +262,10 @@ function getCurrentRotation(el) {
     }
 
     return angle;
+}
+
+async function loading(time) {
+    document.querySelector('.loading').style.display = 'block';
+    await new Promise(resolve => setTimeout(resolve, time));
+    document.querySelector('.loading').style.display = 'none';
 }
