@@ -2,6 +2,7 @@ let artists = getArtists();
 
 init();
 
+// Initiate Page
 function init() {
     fillCards(artists);
 }
