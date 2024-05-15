@@ -12,6 +12,10 @@ function init() {
 
 // Asynchronously fill the cards
 async function filter() {
+    document.querySelector('.loading').style.display = 'block';
+    await new Promise(resolve => setTimeout(resolve, 300));
+
+    let url = new URL(window.location.href);
     let search = document.querySelector('.search').value;
     // let creationDate = document.querySelector('.creation-date').value;
     // let firstAlbum = document.querySelector('.first-album').value;
@@ -22,7 +26,10 @@ async function filter() {
     let filtered = search;
 
     if (!filtered) {
+        document.querySelector('.loading').style.display = 'none';
         fillCards(artists);
+        url.search = '';
+        window.history.pushState({}, '', url);
         return;
     }
 
@@ -35,18 +42,19 @@ async function filter() {
 
     let cards = document.querySelector('.cards');
     cards.innerHTML = '';
+    document.querySelector('.loading').style.display = 'none';
     if (filteredArtists.length === 0) {
         let noResults = document.createElement('h2');
         noResults.classList.add('no-results');
         noResults.textContent = 'No results found';
         cards.appendChild(noResults);
-        return;
     } else {
         fillCards(filteredArtists);
     }
 
+
+
     // Update URL
-    let url = new URL(window.location.href);
     search ? url.searchParams.set('search', search) : url.searchParams.delete('search');
     // url.searchParams.set('creationDate', creationDate);
     // url.searchParams.set('firstAlbum', firstAlbum);
@@ -110,6 +118,8 @@ function debounce(func, wait) {
 }
 
 function fillCards(artists) {
+    let cards = document.querySelector('.cards');
+    cards.innerHTML = '';
     // Fill the cards with the data
     createCards(artists);
     addCardBackEvents();
