@@ -31,9 +31,9 @@
                     <p><strong>Creation Date:</strong> {{ .CreationDate }}</p>
                     <p><strong>First Album:</strong> {{ .FirstAlbum }}</p>
                     <p><strong>Tour Locations:</strong></p>
-                    <ul>
+                    <ul class="locations">
                         {{ range $location, $dates := .TourLocations }}
-                        <li>{{ $location }}
+                        <li class="location">{{ $location }}
                             <ul>
                                 {{ range $dates }}
                                 <li>{{ . }}</li>
@@ -45,8 +45,11 @@
                 </div>
             </div>
         </main>
+        <div id="map"></div>
         <footer>
             <p>&copy; 2024 Groupie-Tracker</p>
         </footer>
+        <script src="js/artist.js"></script>
+        <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCxuBywJ3pwTcJ5Kx-jzVgPDHxcC5DAmcQ&callback=initMap&libraries=marker"></script>
     </body>
 </html>

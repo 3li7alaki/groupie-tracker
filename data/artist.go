@@ -14,6 +14,7 @@ type Artist struct {
 	CreationDate  int      `json:"creationDate"`
 	FirstAlbum    string   `json:"firstAlbum"`
 	TourLocations map[string][]string
+	GeoLocations  []string
 }
 
 var Artists []Artist

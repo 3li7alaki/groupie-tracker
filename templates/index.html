@@ -17,21 +17,12 @@
             </ul>
         </nav>
         <main>
-            <h2>Home</h2>
+            <div class="filters">
+                <label>
+                    <input class="search" type="text" placeholder="Enter Name">
+                </label>
+            </div>
             <div class="cards">
-                {{ range . }}
-                <div class="card">
-                    <div class="card-inner">
-                        <div class="card-front">
-                            <img src="{{ .Image }}" alt="{{ .Name }}" class="album-cover">
-                        </div>
-                        <div class="card-back">
-                            <div class="card-back-disc" data-id="{{ .ID }}"></div>
-                            <h3 class="artist-name">{{ .Name }}</h3>
-                        </div>
-                    </div>
-                </div>
-                {{ end }}
             </div>
         </main>
         <footer>

@@ -1,29 +1,112 @@
-let artists = getArtists();
+let artists = [];
 
 init();
 
 // Initiate Page
 function init() {
-    fillCards(artists);
+    getArtists().then(() => {
+        getFilters();
+        addFilterEvents();
+    });
 }
 
 // Asynchronously fill the cards
-function filter() {
+async function filter() {
     let search = document.querySelector('.search').value;
-    let filteredArtists = artists.filter(artist => artist.name.toLowerCase().includes(search.toLowerCase()));
+    // let creationDate = document.querySelector('.creation-date').value;
+    // let firstAlbum = document.querySelector('.first-album').value;
+    // let memberCount = document.querySelector('.member-count').value;
+    // let concertLocations = document.querySelector('.concert-locations').value;
+
+    // let filtered = search || creationDate || firstAlbum || memberCount || concertLocations;
+    let filtered = search;
+
+    if (!filtered) {
+        fillCards(artists);
+        return;
+    }
+
+    let filteredArtists = artists.filter(artist => {
+        let searchMatch = artist.name.toLowerCase().includes(search.toLowerCase());
+        // let creationDateMatch = artist.creationDate.includes(creationDate);
+        // let firstAlbumMatch = artist.firstAlbum.includes(firstAlbum);
+        return searchMatch;
+    });
+
     let cards = document.querySelector('.cards');
     cards.innerHTML = '';
-    fillCards(filteredArtists);
+    if (filteredArtists.length === 0) {
+        let noResults = document.createElement('h2');
+        noResults.classList.add('no-results');
+        noResults.textContent = 'No results found';
+        cards.appendChild(noResults);
+        return;
+    } else {
+        fillCards(filteredArtists);
+    }
+
+    // Update URL
+    let url = new URL(window.location.href);
+    search ? url.searchParams.set('search', search) : url.searchParams.delete('search');
+    // url.searchParams.set('creationDate', creationDate);
+    // url.searchParams.set('firstAlbum', firstAlbum);
+    // url.searchParams.set('memberCount', memberCount);
+    // url.searchParams.set('concertLocations', concertLocations);
+    window.history.pushState({}, '', url);
 }
 
-function getArtists() {
+function getFilters() {
+    let url = new URL(window.location.href);
+    let search = url.searchParams.get('search');
+    let creationDate = url.searchParams.get('creationDate');
+    let firstAlbum = url.searchParams.get('firstAlbum');
+    let memberCount = url.searchParams.get('memberCount');
+    let concertLocations = url.searchParams.get('concertLocations');
+
+    let filtered = search || creationDate || firstAlbum || memberCount || concertLocations;
+
+    if (filtered) {
+        document.querySelector('.search').value = search;
+        // document.querySelector('.creation-date').value = creationDate;
+        // document.querySelector('.first-album').value = firstAlbum;
+        // document.querySelector('.member-count').value = memberCount;
+        // document.querySelector('.concert-locations').value = concertLocations;
+    }
+
+    filter();
+}
+
+async function getArtists() {
     // Get the data from the API and return it
-    fetch('/artists')
+    await fetch('/artists')
         .then(response => response.json())
-        .then(artists => {
-            return artists;
+        .then(data => {
+            artists = data;
         });
-    return [];
+}
+
+function addFilterEvents() {
+    let search = document.querySelector('.search');
+    // let creationDate = document.querySelector('.creation-date');
+    // let firstAlbum = document.querySelector('.first-album');
+    // let memberCount = document.querySelector('.member-count');
+    // let concertLocations = document.querySelector('.concert-locations');
+
+    search.addEventListener('input', debounce(filter, 200));
+    // creationDate.addEventListener('onchange', filter);
+    // firstAlbum.addEventListener('onchange', filter);
+    // memberCount.addEventListener('onchange', filter);
+    // concertLocations.addEventListener('onchange', filter);
+}
+
+function debounce(func, wait) {
+    let timeout;
+    return function() {
+        const context = this;
+        const args = arguments;
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(context, args), wait);
+    }
 }
 
 function fillCards(artists) {
@@ -39,12 +122,14 @@ function createCards(artists) {
             let card = document.createElement('div');
             card.classList.add('card');
             card.innerHTML = `
-                <div class="card-front">
-                    <img class="album-cover" src="${artist.image}" alt="${artist.name}">
-                </div>
-                <div class="card-back">
-                    <div class="card-back-disc" data-id="${artist.id}"></div>
-                    <h3 class="artist-name">${artist.name}</h3>
+                <div class="card-inner">
+                    <div class="card-front">
+                        <img class="album-cover" src="${artist.image}" alt="${artist.name}">
+                    </div>
+                    <div class="card-back">
+                        <div class="card-back-disc" data-id="${artist.id}"></div>
+                        <h3 class="artist-name">${artist.name}</h3>
+                    </div>
                 </div>
             `;
             cards.appendChild(card);
