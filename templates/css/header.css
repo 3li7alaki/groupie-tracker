@@ -44,3 +44,13 @@ nav ul li a {
     text-decoration: none;
     color: white;
 }
+
+footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    background-color: #9b59b6;
+    color: white;
+    opacity: 0.8;
+}

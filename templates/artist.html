@@ -17,27 +17,28 @@
                 <li><a href="/">Home</a></li>
             </ul>
         </nav>
-        <main class="artist">
-            <h2 class="artist-name">{{ .Name }}</h2>
-
+        <main>
             <div class="artist">
-                <img src="{{ .Image }}" alt="{{ .Name }}" class="artist-image">
-                <div class="artist-info">
-                    <p><strong>Members:</strong></p>
-                    <ul>
-                        {{ range .Members }}
-                        <li>{{ . }}</li>
-                        {{ end }}
-                    </ul>
+                <div>
+                    <h2 class="artist-name">{{ .Name }}</h2>
                     <p><strong>Creation Date:</strong> {{ .CreationDate }}</p>
                     <p><strong>First Album:</strong> {{ .FirstAlbum }}</p>
-                    <p><strong>Tour Locations:</strong></p>
+                    <img src="{{ .Image }}" alt="{{ .Name }}" class="artist-image">
+                </div>
+                <div class="artist-info">
+                    <ul class="members">
+                        <p><strong>Members:</strong></p>
+                        {{ range .Members }}
+                        <li class="member">{{ . }}</li>
+                        {{ end }}
+                    </ul>
                     <ul class="locations">
+                        <p><strong>Tour Locations:</strong></p>
                         {{ range $location, $dates := .TourLocations }}
                         <li class="location">{{ $location }}
-                            <ul>
+                            <ul class="dates">
                                 {{ range $dates }}
-                                <li>{{ . }}</li>
+                                <li class="date">{{ . }}</li>
                                 {{ end }}
                             </ul>
                         </li>
@@ -45,8 +46,8 @@
                     </ul>
                 </div>
             </div>
+            <div id="map"></div>
         </main>
-        <div id="map"></div>
         <footer>
             <p>&copy; 2024 Groupie-Tracker</p>
         </footer>
