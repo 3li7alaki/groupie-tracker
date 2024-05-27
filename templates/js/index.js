@@ -196,9 +196,9 @@ function addCardBackEvents() {
                 if (isMouseDown) {
                     let radians = Math.atan2(e.pageX - center.x, e.pageY - center.y);
                     if (radians < 0) {
-                        currentDegree += 1;
+                        currentDegree += 2;
                     } else {
-                        currentDegree -= 1;
+                        currentDegree -= 2;
                     }
                     cardBack.style.animation = 'none'; // Remove the spinning animation
                     cardBack.style.transform = `rotate(${currentDegree}deg)`;

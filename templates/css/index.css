@@ -2,10 +2,6 @@
     --start-angle: 0deg; /* Default value */
 }
 
-
-h1{
-    text-align: center;
-}
 .cards {
     display: flex;
     justify-content: center;

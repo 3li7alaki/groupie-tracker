@@ -390,6 +390,10 @@ function getLocations() {
         return location.innerHTML.split("\n")[0];
     });
 
+    list.forEach((location) => {
+        console.log(location.firstChild.textContent);
+        location.firstChild.textContent = location.firstChild.textContent.replace(/_/g, ' ').replace(/-/g, ', ').replace(/\b\w/g, l => l.toUpperCase());
+    });
     locations.forEach(location => {
         geocodeAndAddMarker(location);
     });
