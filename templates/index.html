@@ -19,16 +19,20 @@
         </nav>
         <main>
             <div class="filters">
+                <input
+                placeholder="Enter Name"
+                class="search"
+                name="text"
+                type="text"
+              />
+
                 <label>
-                    <input class="search" type="text" placeholder="Enter Name">
-                </label>
-                <label>
-                    Created Between:
-                    <input class="creation-min" type="date" value="" min="1997-01-01" max="2030-12-31">
+                      Created Between:
+                    <input class="creation-min date-input" type="date" value="" min="1997-01-01" max="2030-12-31">
                 </label>
                 <label>
                     and:
-                    <input class="creation-max" type="date" value="" min="1997-01-01" max="2030-12-31">
+                    <input class="creation-max date-input" type="date" value="" min="1997-01-01" max="2030-12-31">
                 </label>
                 <div class="members">
                     <p>Members:</p>
@@ -55,7 +59,7 @@
                     </label>
                 </div>
                 <label>
-                    <input class="first-album" type="month" min="1997-01" max="2030-12">
+                    <input class="first-album date-input" type="month" min="1997-01" max="2030-12">
                 </label>
                 <label>
                     <input class="clear" type="button" value="Clear Filters" onclick="clearFilters()">

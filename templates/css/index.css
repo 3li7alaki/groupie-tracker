@@ -2,6 +2,46 @@
     --start-angle: 0deg; /* Default value */
 }
 
+.search {
+    color: white;
+    border: 2px solid #8707ff;
+    border-radius: 10px;
+    padding: 10px 25px;
+    background: transparent;
+    max-width: 190px;
+  }
+  
+  .search:active {
+    box-shadow: 2px 2px 15px #8707ff inset;
+  }
+  .clear {
+    margin: 0 10px;
+    background-color: #9b59b6;
+    border-radius: 25px;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: 0.3s;
+    color: #ffffff;
+    border-style: none;
+  }
+  
+  .clear:hover{
+    background-color: #8e44ad;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+  }
+  
+  .date-input{
+    margin: 0 10px;
+    background-color: white;
+    border-radius: 25px;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: 0.3s;
+    color: #9b59b6;
+    border-style: none;
+  }
+  
+  
 .cards {
     display: flex;
     justify-content: center;
