@@ -41,14 +41,14 @@ func artistHandler(w http.ResponseWriter, r *http.Request) {
 	// Parse the template
 	tmp, err := template.ParseFiles("templates/artist.html")
 	if err != nil {
-		internalServerError(w, r)
+		internalServerError(w, r, err)
 		return
 	}
 
 	// Execute the template with the artist data
 	err = tmp.Execute(w, artist)
 	if err != nil {
-		internalServerError(w, r)
+		internalServerError(w, r, err)
 		return
 	}
 }

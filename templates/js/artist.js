@@ -1,5 +1,6 @@
 const API_KEY= "AIzaSyCxuBywJ3pwTcJ5Kx-jzVgPDHxcC5DAmcQ";
 
+let geolocations = [];
 let locations;
 let map;
 let geocoder;
@@ -390,16 +391,21 @@ function getLocations() {
         return location.innerHTML.split("\n")[0];
     });
 
+    let index = 0;
+
     list.forEach((location) => {
-        console.log(location.firstChild.textContent);
         location.firstChild.textContent = location.firstChild.textContent.replace(/_/g, ' ').replace(/-/g, ', ').replace(/\b\w/g, l => l.toUpperCase());
+        let dates = [...location.children]
+        dates.forEach((element) => {
+            element.dataset.index = index++;
+        });
     });
-    locations.forEach(location => {
-        geocodeAndAddMarker(location);
+    locations.forEach((location, i) => {
+        geocodeAndAddMarker(location, i);
     });
 }
 
-function geocodeAndAddMarker(location) {
+function geocodeAndAddMarker(location, index) {
     geocoder.geocode({ 'address': location.replace(/_/g, ' ') }, function(results, status) {
         if (status === 'OK') {
             const marker = new google.maps.Marker({
@@ -409,6 +415,10 @@ function geocodeAndAddMarker(location) {
             });
 
             map.setCenter(results[0].geometry.location);
+            geolocations.splice(index, 0, {
+                location: location,
+                coords: results[0].geometry.location
+            });
 
             marker.addListener("click", ({ domEvent, latLng }) => {
                 // Jump to the marker
@@ -422,4 +432,9 @@ function geocodeAndAddMarker(location) {
             console.error('Geocode was not successful for the following reason: ' + status);
         }
     });
+}
+
+function updateMap(index) {
+    map.panTo(geolocations[index].coords);
+    infoWindow.close();
 }

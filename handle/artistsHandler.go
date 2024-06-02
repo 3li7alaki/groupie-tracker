@@ -10,7 +10,7 @@ func artistsHandler(w http.ResponseWriter, r *http.Request) {
 	// Write the artists to the response
 	err := json.NewEncoder(w).Encode(data.Artists)
 	if err != nil {
-		internalServerError(w, r)
+		internalServerError(w, r, err)
 		return
 	}
 	return

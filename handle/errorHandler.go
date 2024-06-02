@@ -1,6 +1,7 @@
 package handle
 
 import (
+	"fmt"
 	"html/template"
 	"net/http"
 )
@@ -46,7 +47,8 @@ func badRequest(w http.ResponseWriter, r *http.Request, message string) {
 	errorHandler(w, r, e)
 }
 
-func internalServerError(w http.ResponseWriter, r *http.Request) {
+func internalServerError(w http.ResponseWriter, r *http.Request, err error) {
+	fmt.Println("Internal Server Error:", err)
 	e := &Error{
 		Name:    "Internal Server Error",
 		Status:  http.StatusInternalServerError,

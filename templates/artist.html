@@ -38,7 +38,7 @@
                         <li class="location">{{ $location }}
                             <ul class="dates">
                                 {{ range $dates }}
-                                <li class="date">{{ . }}</li>
+                                <li class="date" onclick="updateMap(this.parentElement.dataset.index)">{{ . }}</li>
                                 {{ end }}
                             </ul>
                         </li>
