@@ -53,6 +53,7 @@ main {
 
 .date-input {
     margin: 0 10px;
+    width: 55px;
     background-color: white;
     border-radius: 25px;
     padding: 5px 10px;
@@ -60,6 +61,19 @@ main {
     transition: 0.3s;
     color: #9b59b6;
     border-style: none;
+}
+
+.tour-location {
+    margin: 0 10px;
+    width: 200px;
+    background-color: white;
+    border-radius: 25px;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: 0.3s;
+    color: #9b59b6;
+    border-style: none;
+    scrollbar-width: none;
 }
 
 

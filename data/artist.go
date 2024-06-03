@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"strings"
 )
 
 type Artist struct {
@@ -18,6 +19,7 @@ type Artist struct {
 }
 
 var Artists []Artist
+var Locations map[string]string
 
 func GetArtists() {
 	resp, err := http.Get("https://groupietrackers.herokuapp.com/api/artists")
@@ -35,8 +37,14 @@ func GetArtists() {
 	}
 
 	relations := GetRelations()
+
+	Locations = make(map[string]string)
 	for i := range artists {
 		artists[i].AddRelations(relations[i])
+		for _, location := range artists[i].GetLocations() {
+			Locations[location] = strings.Title(strings.ReplaceAll(strings.ReplaceAll(location, "_", " "), "-", ", "))
+		}
+		artists[i].GeoLocations = artists[i].GetLocations()
 	}
 
 	Artists = artists

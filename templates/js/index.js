@@ -19,12 +19,11 @@ async function filter() {
     let creationMin = document.querySelector('.creation-min').value;
     let creationMax = document.querySelector('.creation-max').value;
     let memberCount = [...document.querySelectorAll('.member-count')].filter(member => member.checked).map(member => member.dataset.count);
-    let firstAlbum = document.querySelector('.first-album').value;
+    let firstAlbumMin = document.querySelector('.first-album-min').value;
+    let firstAlbumMax = document.querySelector('.first-album-min').value;
+    let tourLocation = document.querySelector('.tour-location').value;
 
-    // let concertLocations = document.querySelector('.concert-locations').value;
-
-    // let filtered = search || creationDate || firstAlbum || memberCount || concertLocations;
-    let filtered = search || creationMin || creationMax || memberCount.length > 0 || firstAlbum;
+    let filtered = search || creationMin || creationMax || memberCount.length > 0 || firstAlbumMin || firstAlbumMax || tourLocation;
 
     if (!filtered) {
         fillCards(artists);
@@ -35,18 +34,14 @@ async function filter() {
 
     let filteredArtists = artists.filter(artist => {
         let searchMatch = search ? artist.name.toLowerCase().includes(search.toLowerCase()) : true;
-        let creationMinMatch = creationMin ? Date.parse(artist.creationDate) >= Date.parse(creationMin) : true;
-        let creationMaxMatch = creationMax ? Date.parse(artist.creationDate) <= Date.parse(creationMax) : true;
+        let creationMinMatch = creationMin ? Date.parse(artist.creationDate) >= Date.parse(creationMin+'-01-01') : true;
+        let creationMaxMatch = creationMax ? Date.parse(artist.creationDate) <= Date.parse(creationMax+'-12-31') : true;
         let memberCountMatch = memberCount.length > 0 ? memberCount.includes(artist.members.length.toString()) : true;
+        let firstAlbumMinMatch = firstAlbumMin ? Date.parse(artist.firstAlbum) >= Date.parse(firstAlbumMin+'-01-01') : true;
+        let firstAlbumMaxMatch = firstAlbumMax ? Date.parse(artist.firstAlbum) <= Date.parse(firstAlbumMax+'-12-31') : true;
+        let tourLocationMatch = tourLocation ? artist.GeoLocations.includes(tourLocation) : true;
 
-        let firstAlbumMatch = true;
-        if (firstAlbum) {
-            let firstAlbumDate = new Date(firstAlbum+'-01');
-            let artistFirstAlbumDate = new Date(artist.firstAlbum);
-            firstAlbumMatch = firstAlbumDate.getFullYear() === artistFirstAlbumDate.getFullYear() && firstAlbumDate.getMonth() === artistFirstAlbumDate.getMonth();
-        }
-
-        return searchMatch && creationMinMatch && creationMaxMatch && memberCountMatch && firstAlbumMatch;
+        return searchMatch && creationMinMatch && creationMaxMatch && memberCountMatch && firstAlbumMinMatch && firstAlbumMaxMatch && tourLocationMatch;
     });
 
     let cards = document.querySelector('.cards');
@@ -67,9 +62,9 @@ async function filter() {
     creationMin ? url.searchParams.set('creationMin', creationMin) : url.searchParams.delete('creationMin');
     creationMax ? url.searchParams.set('creationMax', creationMax) : url.searchParams.delete('creationMax');
     memberCount.length > 0 ? url.searchParams.set('memberCount', memberCount) : url.searchParams.delete('memberCount');
-    firstAlbum ? url.searchParams.set('firstAlbum', firstAlbum) : url.searchParams.delete('firstAlbum');
-    // url.searchParams.set('memberCount', memberCount);
-    // url.searchParams.set('concertLocations', concertLocations);
+    firstAlbumMin ? url.searchParams.set('firstAlbumMin', firstAlbumMin) : url.searchParams.delete('firstAlbumMin');
+    firstAlbumMax ? url.searchParams.set('firstAlbumMax', firstAlbumMax) : url.searchParams.delete('firstAlbumMax');
+    tourLocation ? url.searchParams.set('tourLocation', tourLocation) : url.searchParams.delete('tourLocation');
     window.history.pushState({}, '', url);
 }
 
@@ -79,20 +74,20 @@ function getFilters() {
     let creationMin = url.searchParams.get('creationMin');
     let creationMax = url.searchParams.get('creationMax');
     let memberCount = url.searchParams.get('memberCount');
-    let firstAlbum = url.searchParams.get('firstAlbum');
-    let concertLocations = url.searchParams.get('concertLocations');
+    let firstAlbumMin = url.searchParams.get('firstAlbumMin');
+    let firstAlbumMax = url.searchParams.get('firstAlbumMax');
+    let tourLocation = url.searchParams.get('tourLocation');
 
-    let filtered = search || creationMin || creationMax || memberCount || firstAlbum;
+    let filtered = search || creationMin || creationMax || memberCount || firstAlbumMin || firstAlbumMax || tourLocation;
 
     if (filtered) {
         document.querySelector('.search').value = search;
         document.querySelector('.creation-min').value = creationMin;
         document.querySelector('.creation-max').value = creationMax;
         memberCount ? memberCount.split(',').forEach(count => document.querySelector(`.member-count[data-count="${count}"]`).checked = true) : null;
-        document.querySelector('.first-album').value = firstAlbum;
-        // document.querySelector('.first-album').value = firstAlbum;
-        // document.querySelector('.member-count').value = memberCount;
-        // document.querySelector('.concert-locations').value = concertLocations;
+        document.querySelector('.first-album-min').value = firstAlbumMin;
+        document.querySelector('.first-album-max').value = firstAlbumMax;
+        document.querySelector('.tour-location').value = tourLocation;
     }
 
     filter();
@@ -103,10 +98,10 @@ function clearFilters() {
     document.querySelector('.search').value = '';
     document.querySelector('.creation-min').value = '';
     document.querySelector('.creation-max').value = '';
-    document.querySelector('.first-album').value = '';
+    document.querySelector('.first-album-min').value = '';
+    document.querySelector('.first-album-max').value = '';
     document.querySelectorAll('.member-count').forEach(member => member.checked = false);
-    // document.querySelector('.member-count').value = '';
-    // document.querySelector('.concert-locations').value = '';
+    document.querySelector('.tour-location').value = '';
     filter();
 }
 
@@ -124,18 +119,17 @@ function addFilterEvents() {
     let creationMin = document.querySelector('.creation-min');
     let creationMax = document.querySelector('.creation-max');
     let memberCount = document.querySelectorAll('.member-count');
-    let firstAlbum = document.querySelector('.first-album');
-    // let memberCount = document.querySelector('.member-count');
-    // let concertLocations = document.querySelector('.concert-locations');
+    let firstAlbumMin = document.querySelector('.first-album-min');
+    let firstAlbumMax = document.querySelector('.first-album-max');
+    let tourLocation = document.querySelector('.tour-location');
 
     search.addEventListener('input', debounce(filter, 200));
     creationMin.addEventListener('input', debounce(filter, 200));
     creationMax.addEventListener('input', debounce(filter, 200));
     memberCount.forEach(member => member.addEventListener('change', debounce(filter, 200)));
-    firstAlbum.addEventListener('input', debounce(filter, 200));
-    // firstAlbum.addEventListener('onchange', filter);
-    // memberCount.addEventListener('onchange', filter);
-    // concertLocations.addEventListener('onchange', filter);
+    firstAlbumMin.addEventListener('input', debounce(filter, 200));
+    firstAlbumMax.addEventListener('input', debounce(filter, 200));
+    tourLocation.addEventListener('input', debounce(filter, 200));
 }
 
 function debounce(func, wait) {

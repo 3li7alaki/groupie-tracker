@@ -28,12 +28,12 @@
             </div>
             <div class="filters">
                 <label>
-                      Created between
-                    <input class="creation-min date-input" type="date" value="" min="1997-01-01" max="2030-12-31">
+                    Created between
+                    <input class="creation-min date-input" type="number" value="" min="1970" max="2030" placeholder="YYYY">
                 </label>
                 <label>
                     and
-                    <input class="creation-max date-input" type="date" value="" min="1997-01-01" max="2030-12-31">
+                    <input class="creation-max date-input" type="number" value="" min="1970" max="2030" placeholder="YYYY">
                 </label>
                 <div class="members">
                     <p>Members:</p>
@@ -60,8 +60,21 @@
                     </label>
                 </div>
                 <label>
-                    First Album:
-                    <input class="first-album date-input" type="month" min="1997-01" max="2030-12">
+                    First Album between
+                    <input class="first-album-min date-input" type="number" value="" min="1970" max="2030" placeholder="YYYY">
+                </label>
+                <label>
+                    and
+                    <input class="first-album-max date-input" type="number" value="" min="1970" max="2030" placeholder="YYYY">
+                </label>
+                <label>
+                    Tour in
+                    <select class="tour-location">
+                        <option value="">Tour Location</option>
+                        {{ range $key, $location := . }}
+                        <option value="{{ $key }}">{{ $location }}</option>
+                        {{ end }}
+                    </select>
                 </label>
                 <label>
                     <input class="clear" type="button" value="Clear Filters" onclick="clearFilters()">
