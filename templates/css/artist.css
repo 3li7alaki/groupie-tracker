@@ -68,7 +68,7 @@ main {
 .member:hover {
     background-color: #8e44ad;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
-    cursor: grabbing;
+    cursor: pointer;
 }
 
 .location {

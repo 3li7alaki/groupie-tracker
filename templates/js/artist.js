@@ -5,6 +5,7 @@ let locations;
 let map;
 let geocoder;
 let infoWindow;
+let flightPath;
 
 async function initMap() {
     map = new google.maps.Map(document.getElementById('map'), {
@@ -381,6 +382,7 @@ async function initMap() {
     infoWindow = new google.maps.InfoWindow();
 
     getLocations();
+    setMemberListeners();
 }
 
 
@@ -427,14 +429,47 @@ function geocodeAndAddMarker(location, index) {
                 infoWindow.close();
                 infoWindow.setContent(location.replace(/_/g, ' ').replace(/-/g, ', ').replace(/\b\w/g, l => l.toUpperCase()));
                 infoWindow.open(marker.map, marker);
+
             })
+
+            if (geolocations.length > 1) {
+                drawPath();
+            }
         } else {
             console.error('Geocode was not successful for the following reason: ' + status);
         }
     });
 }
 
+function drawPath() {
+    const path = geolocations.map(geo => geo.coords);
+    // If there's an existing path, set it to null to remove it
+    if (flightPath) {
+        flightPath.setMap(null);
+    }
+
+    flightPath = new google.maps.Polyline({
+        path: path,
+        geodesic: true,
+        strokeColor: '#9b59b6',
+        strokeOpacity: 1.0,
+        strokeWeight: 2
+    });
+
+    flightPath.setMap(map);
+}
+
 function updateMap(index) {
     map.panTo(geolocations[index].coords);
     infoWindow.close();
+}
+
+function setMemberListeners() {
+    let list = [...document.querySelectorAll(".member")];
+
+    list.forEach((member) => {
+        member.addEventListener("click", () => {
+            window.open(`https://www.google.com/search?q=${member.textContent}`);
+        });
+    });
 }
