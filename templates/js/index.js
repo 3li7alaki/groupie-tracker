@@ -20,7 +20,7 @@ async function filter() {
     let creationMax = document.querySelector('.creation-max').value;
     let memberCount = [...document.querySelectorAll('.member-count')].filter(member => member.checked).map(member => member.dataset.count);
     let firstAlbumMin = document.querySelector('.first-album-min').value;
-    let firstAlbumMax = document.querySelector('.first-album-min').value;
+    let firstAlbumMax = document.querySelector('.first-album-max').value;
     let tourLocation = document.querySelector('.tour-location').value;
 
     let filtered = search || creationMin || creationMax || memberCount.length > 0 || firstAlbumMin || firstAlbumMax || tourLocation;
