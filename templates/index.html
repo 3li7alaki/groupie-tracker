@@ -25,17 +25,16 @@
                 name="text"
                 type="text"
               />
+                <ul class="suggestions"></ul>
             </div>
             <div class="filters">
-                <label>
+                <label class="input-label">
                     Created between
                     <input class="creation-min date-input" type="number" value="" min="1970" max="2030" placeholder="YYYY">
-                </label>
-                <label>
                     and
                     <input class="creation-max date-input" type="number" value="" min="1970" max="2030" placeholder="YYYY">
                 </label>
-                <div class="members">
+                <div class="members input-label">
                     <p>Members:</p>
                     <label class="member-label">
                         <input type="checkbox" class="member-count" data-count="1">  1
@@ -59,20 +58,18 @@
                         <input type="checkbox" class="member-count" data-count="7">  7
                     </label>
                 </div>
-                <label>
+                <label class="input-label">
                     First Album between
                     <input class="first-album-min date-input" type="number" value="" min="1970" max="2030" placeholder="YYYY">
-                </label>
-                <label>
                     and
                     <input class="first-album-max date-input" type="number" value="" min="1970" max="2030" placeholder="YYYY">
                 </label>
-                <label>
+                <label class="input-label">
                     Tour in
                     <select class="tour-location">
                         <option value="">Tour Location</option>
                         {{ range $key, $location := . }}
-                        <option value="{{ $key }}">{{ $location }}</option>
+                        <option value="{{ $key }}" class="location">{{ $location }}</option>
                         {{ end }}
                     </select>
                 </label>

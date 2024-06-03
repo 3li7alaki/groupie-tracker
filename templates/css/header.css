@@ -54,6 +54,7 @@ footer {
     opacity: 0.8;
     color: white;
     text-align: center;
+    z-index: 1000;
 }
 
 .error-message {

@@ -33,7 +33,7 @@ async function filter() {
     }
 
     let filteredArtists = artists.filter(artist => {
-        let searchMatch = search ? artist.name.toLowerCase().includes(search.toLowerCase()) : true;
+        let searchMatch = search ? inSearch(artist, search.toLowerCase()) : true;
         let creationMinMatch = creationMin ? Date.parse(artist.creationDate) >= Date.parse(creationMin+'-01-01') : true;
         let creationMaxMatch = creationMax ? Date.parse(artist.creationDate) <= Date.parse(creationMax+'-12-31') : true;
         let memberCountMatch = memberCount.length > 0 ? memberCount.includes(artist.members.length.toString()) : true;
@@ -123,7 +123,18 @@ function addFilterEvents() {
     let firstAlbumMax = document.querySelector('.first-album-max');
     let tourLocation = document.querySelector('.tour-location');
 
-    search.addEventListener('input', debounce(filter, 200));
+    search.addEventListener('change', debounce(filter, 200));
+    search.addEventListener('input', debounce(suggest, 200));
+    search.addEventListener('focus', function() {
+        this.active = true;
+        suggest();
+    });
+    search.addEventListener('blur', function() {
+        this.active = false;
+        setTimeout(() => {
+            document.querySelector('.suggestions').style.display = 'none';
+        }, 200);
+    });
     creationMin.addEventListener('input', debounce(filter, 200));
     creationMax.addEventListener('input', debounce(filter, 200));
     memberCount.forEach(member => member.addEventListener('change', debounce(filter, 200)));
@@ -262,4 +273,99 @@ async function loading(time) {
     document.querySelector('.loading').style.display = 'block';
     await new Promise(resolve => setTimeout(resolve, time));
     document.querySelector('.loading').style.display = 'none';
+}
+
+function inSearch(artist, search) {
+    let inSearch = false;
+    // Check if search term is in any of the artists location
+    let artistLocations = artist.GeoLocations;
+    artistLocations.forEach(location => {
+        if (location.toLowerCase().includes(search)) {
+            inSearch = true;
+        }
+    });
+
+    // Check if search term is in artist name
+    if (artist.name.toLowerCase().includes(search)) {
+        inSearch = true;
+    }
+
+    // Check if search term is in artist members
+    let artistMembers = artist.members;
+    artistMembers.forEach(member => {
+        if (member.toLowerCase().includes(search)) {
+            inSearch = true;
+        }
+    });
+
+    // Check if search term is in artist creation date
+    if (artist.creationDate.toString().includes(search)) {
+        inSearch = true;
+    }
+
+    // Check if search term is in artist first album date
+    if (artist.firstAlbum.includes(search) && search.length > 4) {
+        inSearch = true;
+    }
+
+    return inSearch;
+}
+
+function suggest() {
+    let search = document.querySelector('.search').value.toLowerCase();
+    let suggestionsBox = document.querySelector('.suggestions');
+    suggestionsBox.innerHTML = '';
+
+    if (!search || document.querySelector('.search').active === false) {
+        suggestionsBox.style.display = 'none';
+        return;
+    }
+
+    let suggestions = [];
+    artists.forEach(artist => {
+        artist.name.toLowerCase().indexOf(search) === 0 ? suggestions.push({type: 'Artist/Band', value: artist.name}) : null;
+        artist.members.forEach(member => member.toLowerCase().indexOf(search) === 0 ? suggestions.push({
+            type: 'Artist/Member',
+            value: member
+        }) : null);
+        artist.creationDate.toString().includes(search) ? suggestions.push({
+            type: 'Creation Date',
+            value: artist.creationDate
+        }) : null;
+        artist.firstAlbum.includes(search) ? suggestions.push({type: 'First Album', value: artist.firstAlbum}) : null;
+    });
+
+    if (search.length > 3) {
+        let locations = [...document.querySelectorAll('.location')].map(location => location.value);
+        locations.forEach(location => location.toLowerCase().includes(search) ? suggestions.push({
+            type: 'Location',
+            value: location
+        }) : null);
+    }
+
+    suggestions.length > 0 ? suggestionsBox.style.display = 'block' : suggestionsBox.style.display = 'none';
+
+    suggestions = suggestions.filter((suggestion, index, self) =>
+        index === self.findIndex(t => (
+            t.type === suggestion.type && t.value === suggestion.value
+        ))
+    );
+
+    suggestions.forEach(suggestion => {
+        let suggestionElement = document.createElement('div');
+        suggestionElement.classList.add('suggestion');
+        let typeElement = document.createElement('span');
+        typeElement.classList.add('type');
+        typeElement.textContent = suggestion.type;
+        let valueElement = document.createElement('span');
+        valueElement.classList.add('value');
+        valueElement.textContent = suggestion.value;
+        suggestionElement.appendChild(valueElement);
+        suggestionElement.appendChild(typeElement);
+
+        suggestionElement.addEventListener('click', function() {
+            document.querySelector('.search').value = suggestion.value;
+        });
+        suggestionsBox.appendChild(suggestionElement);
+    });
 }
