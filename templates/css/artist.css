@@ -8,7 +8,7 @@ body {
 main {
     display: flex;
     flex-wrap: nowrap;
-    justify-content: space-around;
+    justify-content: center;
     align-items: flex-start;
     margin: 40px;
 }

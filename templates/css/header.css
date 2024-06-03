@@ -8,9 +8,10 @@ body {
 header h1 {
     text-align: center;
     font-size: 2.5rem;
-    color: white;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
     margin-top: 20px;
+    color: white;
+    text-align: center;
 }
 
 nav {
@@ -49,8 +50,21 @@ footer {
     position: fixed;
     bottom: 0;
     width: 100%;
-    text-align: center;
     background-color: #9b59b6;
-    color: white;
     opacity: 0.8;
+    color: white;
+    text-align: center;
+}
+
+.error-message {
+    font-size: 2rem;
+    color: white;
+    text-align: center;
+}
+
+.error-status {
+    font-size: 20rem;
+    margin: 0;
+    color: white;
+    text-align: center;
 }
