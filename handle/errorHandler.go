@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
+	"os"
 )
 
 type Error struct {
@@ -14,6 +15,11 @@ type Error struct {
 
 func errorHandler(w http.ResponseWriter, r *http.Request, e *Error) {
 	// Parse the template
+	_, err := os.Stat("templates/error.html")
+	if err != nil {
+		http.Error(w, e.Message, e.Status)
+		return
+	}
 	tmp, err := template.ParseFiles("templates/error.html")
 	if err != nil {
 		http.Error(w, e.Message, e.Status)

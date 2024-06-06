@@ -4,6 +4,7 @@ import (
 	"groupie/data"
 	"html/template"
 	"net/http"
+	"os"
 	"strconv"
 )
 
@@ -39,6 +40,12 @@ func artistHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Parse the template
+	_, err = os.Stat("templates/artist.html")
+	if err != nil {
+		internalServerError(w, r, err)
+		return
+	}
+
 	tmp, err := template.ParseFiles("templates/artist.html")
 	if err != nil {
 		internalServerError(w, r, err)
