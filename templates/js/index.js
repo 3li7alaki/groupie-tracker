@@ -37,8 +37,8 @@ async function filter() {
         let creationMinMatch = creationMin ? Date.parse(artist.creationDate) >= Date.parse(creationMin+'-01-01') : true;
         let creationMaxMatch = creationMax ? Date.parse(artist.creationDate) <= Date.parse(creationMax+'-12-31') : true;
         let memberCountMatch = memberCount.length > 0 ? memberCount.includes(artist.members.length.toString()) : true;
-        let firstAlbumMinMatch = firstAlbumMin ? Date.parse(artist.firstAlbum) >= Date.parse(firstAlbumMin+'-01-01') : true;
-        let firstAlbumMaxMatch = firstAlbumMax ? Date.parse(artist.firstAlbum) <= Date.parse(firstAlbumMax+'-12-31') : true;
+        let firstAlbumMinMatch = firstAlbumMin ? Date.parse(artist.firstAlbum.split('-')[2]+'-01-01') >= Date.parse(firstAlbumMin+'-01-01') : true;
+        let firstAlbumMaxMatch = firstAlbumMax ? Date.parse(artist.firstAlbum.split('-')[2]+'-01-01') <= Date.parse(firstAlbumMax+'-12-31') : true;
         let tourLocationMatch = tourLocation ? artist.GeoLocations.includes(tourLocation) : true;
 
         return searchMatch && creationMinMatch && creationMaxMatch && memberCountMatch && firstAlbumMinMatch && firstAlbumMaxMatch && tourLocationMatch;
@@ -346,9 +346,9 @@ function suggest() {
     suggestions.length > 0 ? suggestionsBox.style.display = 'block' : suggestionsBox.style.display = 'none';
 
     suggestions = suggestions.filter((suggestion, index, self) =>
-        index === self.findIndex(t => (
-            t.type === suggestion.type && t.value === suggestion.value
-        ))
+            index === self.findIndex(t => (
+                t.type === suggestion.type && t.value === suggestion.value
+            ))
     );
 
     suggestions.forEach(suggestion => {
