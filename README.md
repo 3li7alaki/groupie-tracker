@@ -16,7 +16,7 @@ Groupie Trackers is a web application that displays information about various mu
 - **Interactivity:** Utilized JavaScript for creating events, animations, geocoding, and client-side asynchronous filtering to enhance the user experience
 
 ## Installation and Usage
-1. Clone the repository: `git clone https://github.com/yourusername/groupie-trackers.git`
+1. Clone the repository: `git clone https://github.com/3li7alaki/groupie-trackers.git`
 2. Navigate to the project directory: `cd groupie-trackers`
 3. Run the application: `go run main.go`
 4. Open your web browser and visit: `http://localhost:8080`
